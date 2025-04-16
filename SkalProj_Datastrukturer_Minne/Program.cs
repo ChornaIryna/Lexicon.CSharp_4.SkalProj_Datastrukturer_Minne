@@ -76,6 +76,75 @@ class Program
         //string value = input.substring(1);
 
         //switch(nav){...}
+
+
+        List<string> theList = new List<string>();
+        string input;
+        char nav;
+        string value;
+
+        while (true)
+        {
+            Console.WriteLine($"{Environment.NewLine}Examine List: Enter '+' and 'value' to add the value, '-' and 'value' to remove the value, or 'back' to return to main menu:");
+            input = Console.ReadLine()!;
+
+            if (input.ToLower() == "back")
+            {
+                break; // Exit the loop and return to the main menu
+            }
+
+            if (string.IsNullOrEmpty(input))
+            {
+                Console.WriteLine("Please enter a valid input (+value or -value).");
+                continue;
+            }
+            nav = input[0];
+            value = input.Substring(1);
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                Console.WriteLine("Please provide a value after the '+' or '-'.");
+                continue;
+            }
+
+            switch (nav)
+            {
+                case '+':
+                    theList.Add(value);
+                    Console.WriteLine($"Added '{value}' to the list.");
+                    Console.WriteLine($"Count: {theList.Count}, Capacity: {theList.Capacity}");
+                    break;
+                case '-':
+                    if (theList.Remove(value))
+                    {
+                        Console.WriteLine($"Removed '{value}' from the list.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"'{value}' not found in the list.");
+                    }
+                    Console.WriteLine($"Count: {theList.Count}, Capacity: {theList.Capacity}");
+                    break;
+                default:
+                    Console.WriteLine("Invalid input. Please use '+' to add or '-' to remove.");
+                    break;
+            }
+        }
+
+        //Answers to the questions:
+        // 2. The capacity of the List<string> increases automatically when the number of elements in the list exceeds the current capacity.
+
+        // 3. The capacity doubles when it needs to increase.
+
+        // 4. Increasing the capacity every time an element is added would lead to frequent and expensive memory reallocations.
+        //    Doubling the capacity is a compromise: it avoids excessive reallocations while still ensuring that adding elements remains an O(1) operation on average.
+
+        // 5. The capacity of a List<string> does NOT decrease when elements are removed. The capacity remains the same until the List<string> object is destroyed or explicitly changed.
+
+        // 6. It is advantageous to use an array instead of a list when:
+        //   - The size of the collection is known and fixed.
+        //   - Performance is critical, and the overhead of dynamic resizing is unacceptable.
+        //   - Memory usage needs to be strictly controlled.
     }
 
     /// <summary>
