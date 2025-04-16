@@ -11,11 +11,12 @@ class Program
 
         while (true)
         {
-            Console.WriteLine("Please navigate through the menu by inputting the number \n(1, 2, 3 ,4, 0) of your choice"
+            Console.WriteLine("Please navigate through the menu by inputting the number \n(1, 2, 3 ,4, 5, 0) of your choice"
                 + "\n1. Examine a List"
                 + "\n2. Examine a Queue"
                 + "\n3. Examine a Stack"
                 + "\n4. CheckParenthesis"
+                + "\n5. ReverseText"
                 + "\n0. Exit the application");
             char input = ' '; //Creates the character input to be used with the switch-case below.
             try
@@ -41,6 +42,9 @@ class Program
                 case '4':
                     CheckParanthesis();
                     break;
+                case '5':
+                    ReverseText();
+                    break;
                 /*
                  * Extend the menu to include the recursive 
                  * and iterative exercises.
@@ -49,7 +53,7 @@ class Program
                     Environment.Exit(0);
                     break;
                 default:
-                    Console.WriteLine("Please enter some valid input (0, 1, 2, 3, 4)");
+                    Console.WriteLine("Please enter some valid input (0, 1, 2, 3, 4, 5)");
                     break;
             }
         }
@@ -239,6 +243,59 @@ class Program
          * Create a switch with cases to push or pop items
          * Make sure to look at the stack after pushing and and poping to see how it behaves
         */
+
+        Stack<string> theStack = new();
+        string input;
+
+        while (true)
+        {
+            Console.WriteLine($"{Environment.NewLine}Examine Stack: Enter 'push <item>' to add to stack, 'pop' to remove, or 'back' to return to main menu:");
+            input = Console.ReadLine()!;
+
+            if (input.ToLower() == "back")
+            {
+                break;
+            }
+
+            string[] parts = input.Split(' ');
+            string command = parts[0].ToLower();
+
+            switch (command)
+            {
+                case "push":
+                    if (parts.Length > 1)
+                    {
+                        string item = string.Join(" ", parts.Skip(1));
+                        theStack.Push(item);
+                        Console.WriteLine($"'{item}' pushed to the stack.");
+                        Console.WriteLine($"Current stack: {string.Join(", ", theStack)}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please provide an item to push.");
+                    }
+                    break;
+                case "pop":
+                    if (theStack.Count > 0)
+                    {
+                        string poppedItem = theStack.Pop();
+                        Console.WriteLine($"'{poppedItem}' popped from the stack.");
+                        Console.WriteLine($"Current stack: {string.Join(", ", theStack)}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Stack is empty.");
+                    }
+                    break;
+                default:
+                    Console.WriteLine("Invalid input. Please use 'push <item>' or 'pop'.");
+                    break;
+            }
+        }
+
+        //Answer to the question:
+        // 1. A stack works according to the principle "First in, last out" (FILO). In an ICA queue, we want to serve customers in the order they arrive ("First in, first out" - FIFO).
+        // In the example above in the method ExamineQueue(), Olle would be served before Stina, and Stina before Greta, which is wrong. This makes a stack unsuitable for simulating a real queue.
     }
 
     static void CheckParanthesis()
@@ -250,6 +307,46 @@ class Program
          */
 
     }
+
+    /// <summary>
+    /// Reverses the text using a stack
+    /// 
+    /// this method is a part of exercise 3: ExamineStack().
+    /// </summary>
+    private static void ReverseText()
+    {
+        Stack<char> charStack = new();
+        string inputString;
+
+        while (true)
+        {
+            Console.WriteLine($"{Environment.NewLine}Reverse Text: Enter a text to reverse or 'back' to return to main menu:");
+            inputString = Console.ReadLine()!;
+            if (inputString.Trim().ToLower() == "back")
+            {
+                break;
+            }
+            if (string.IsNullOrWhiteSpace(inputString))
+            {
+                Console.WriteLine("Please enter a valid text.");
+                continue;
+            }
+
+            foreach (char c in inputString)
+            {
+                charStack.Push(c);
+            }
+
+            string reversedString = "";
+            while (charStack.Count > 0)
+            {
+                reversedString += charStack.Pop();
+            }
+
+            Console.WriteLine($"The reversed string: {reversedString}");
+        }
+    }
+
 
 }
 
