@@ -88,7 +88,7 @@ class Program
             Console.WriteLine($"{Environment.NewLine}Examine List: Enter '+' and 'value' to add the value, '-' and 'value' to remove the value, or 'back' to return to main menu:");
             input = Console.ReadLine()!;
 
-            if (input.ToLower() == "back")
+            if (input.Trim().ToLower() == "back")
             {
                 break; // Exit the loop and return to the main menu
             }
@@ -157,6 +157,76 @@ class Program
          * Create a switch with cases to enqueue items or dequeue items
          * Make sure to look at the queue after Enqueueing and Dequeueing to see how it behaves
         */
+
+        Queue<string> theQueue = new();
+        string input;
+
+        // Simulate ICA queue
+        theQueue.Enqueue("Kalle");
+        theQueue.Enqueue("Greta");
+        theQueue.Dequeue(); // Kalle leaves
+        theQueue.Enqueue("Stina");
+        theQueue.Dequeue(); // Greta leaves
+        theQueue.Enqueue("Olle");
+
+        Console.WriteLine("Simulated ICA Queue:");
+        foreach (var person in theQueue)
+        {
+            Console.WriteLine(person);
+        }
+
+
+        while (true)
+        {
+            Console.WriteLine($"{Environment.NewLine}Examine Queue: Enter 'enqueue <name>' to add to queue, 'dequeue' to remove, or 'back' to return to main menu:");
+            input = Console.ReadLine()!;
+
+            if (input.Trim().ToLower() == "back")
+            {
+                break;
+            }
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                Console.WriteLine("Please enter a valid input (enqueue <name> or dequeue).");
+                continue;
+            }
+
+            string[] parts = input.Split(' ');
+            string command = parts[0].Trim().ToLower();
+
+            switch (command)
+            {
+                case "enqueue":
+                    if (parts.Length > 1)
+                    {
+                        string name = string.Join(" ", parts.Skip(1)); //handles names with spaces
+                        theQueue.Enqueue(name);
+                        Console.WriteLine($"'{name}' added to the queue.");
+                        Console.WriteLine($"Current queue: {string.Join(", ", theQueue)}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please provide a name to enqueue.");
+                    }
+                    break;
+                case "dequeue":
+                    if (theQueue.Count > 0)
+                    {
+                        string dequeuedName = theQueue.Dequeue();
+                        Console.WriteLine($"'{dequeuedName}' removed from the queue.");
+                        Console.WriteLine($"Current queue: {string.Join(", ", theQueue)}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Queue is empty.");
+                    }
+                    break;
+                default:
+                    Console.WriteLine("Invalid input. Please use 'enqueue <name>' or 'dequeue'.");
+                    break;
+            }
+        }
     }
 
     /// <summary>
