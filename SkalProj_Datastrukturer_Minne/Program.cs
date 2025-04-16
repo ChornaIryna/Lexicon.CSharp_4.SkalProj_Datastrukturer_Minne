@@ -134,21 +134,6 @@ class Program
                     break;
             }
         }
-
-        //Answers to the questions:
-        // 2. The capacity of the List<string> increases automatically when the number of elements in the list exceeds the current capacity.
-
-        // 3. The capacity doubles when it needs to increase.
-
-        // 4. Increasing the capacity every time an element is added would lead to frequent and expensive memory reallocations.
-        //    Doubling the capacity is a compromise: it avoids excessive reallocations while still ensuring that adding elements remains an O(1) operation on average.
-
-        // 5. The capacity of a List<string> does NOT decrease when elements are removed. The capacity remains the same until the List<string> object is destroyed or explicitly changed.
-
-        // 6. It is advantageous to use an array instead of a list when:
-        //   - The size of the collection is known and fixed.
-        //   - Performance is critical, and the overhead of dynamic resizing is unacceptable.
-        //   - Memory usage needs to be strictly controlled.
     }
 
     /// <summary>
@@ -292,11 +277,8 @@ class Program
                     break;
             }
         }
-
-        //Answer to the question:
-        // 1. A stack works according to the principle "First in, last out" (FILO). In an ICA queue, we want to serve customers in the order they arrive ("First in, first out" - FIFO).
-        // In the example above in the method ExamineQueue(), Olle would be served before Stina, and Stina before Greta, which is wrong. This makes a stack unsuitable for simulating a real queue.
     }
+
 
     static void CheckParanthesis()
     {
@@ -305,7 +287,53 @@ class Program
          * Example of correct: (()), {}, [({})],  List<int> list = new List<int>() { 1, 2, 3, 4 };
          * Example of incorrect: (()]), [), {[()}],  List<int> list = new List<int>() { 1, 2, 3, 4 );
          */
+        Console.Write("Enter a string to check for balanced parentheses: ");
+        string input = Console.ReadLine()!;
 
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            Console.WriteLine($"The string should not be empty.{Environment.NewLine}");
+            return;
+        }
+
+        if (IsBalancedParentheses(input))
+        {
+            Console.WriteLine($"The string has balanced parentheses.{Environment.NewLine}");
+        }
+        else
+        {
+            Console.WriteLine($"The string does not have balanced parentheses.{Environment.NewLine}");
+        }
+    }
+
+    /// <summary>
+    /// Checks if the parentheses in a string are balanced
+    /// </summary>
+    static bool IsBalancedParentheses(string input)
+    {
+        Stack<char> stack = new();
+        Dictionary<char, char> matchingPairs = new()
+        {
+            { ')', '(' },
+            { '}', '{' },
+            { ']', '[' }
+        };
+
+        foreach (char c in input)
+        {
+            if (matchingPairs.ContainsValue(c)) // Opening brackets
+            {
+                stack.Push(c);
+            }
+            else if (matchingPairs.ContainsKey(c)) // Closing brackets
+            {
+                if (stack.Count == 0 || stack.Pop() != matchingPairs[c])
+                {
+                    return false;
+                }
+            }
+        }
+        return stack.Count == 0;// Ensure no unmatched opening brackets remain
     }
 
     /// <summary>
@@ -318,35 +346,83 @@ class Program
         Stack<char> charStack = new();
         string inputString;
 
-        while (true)
+        Console.Write("Reverse Text: Enter a text to reverse: ");
+        inputString = Console.ReadLine()!;
+
+        if (string.IsNullOrWhiteSpace(inputString))
         {
-            Console.WriteLine($"{Environment.NewLine}Reverse Text: Enter a text to reverse or 'back' to return to main menu:");
-            inputString = Console.ReadLine()!;
-            if (inputString.Trim().ToLower() == "back")
-            {
-                break;
-            }
-            if (string.IsNullOrWhiteSpace(inputString))
-            {
-                Console.WriteLine("Please enter a valid text.");
-                continue;
-            }
-
-            foreach (char c in inputString)
-            {
-                charStack.Push(c);
-            }
-
-            string reversedString = "";
-            while (charStack.Count > 0)
-            {
-                reversedString += charStack.Pop();
-            }
-
-            Console.WriteLine($"The reversed string: {reversedString}");
+            Console.WriteLine($"The string should not be empty.{Environment.NewLine}");
+            return;
         }
+
+        foreach (char c in inputString)
+        {
+            charStack.Push(c);
+        }
+
+        string reversedString = "";
+        while (charStack.Count > 0)
+        {
+            reversedString += charStack.Pop();
+        }
+
+        Console.WriteLine($"The reversed string: {reversedString}{Environment.NewLine}");
     }
 
 
 }
+/// <summary>
+/// Svar på frågorna
+/// 
+/// Under rubriken Frågor: 
+///  1. Hur fungerar stacken och heapen? Förklara gärna med exempel eller skiss på dess grundläggande funktion
+///     Stacken: Fungerar som en stapel av lådor. Varje låda representerar en metod eller funktion. 
+///     När en metod anropas, placeras den överst på stacken. När metoden är klar, tas den bort från stacken. 
+///     Detta är ett snabbt och effektivt sätt att hantera minne för temporära variabler.
+///     Heapen: Fungerar mer som ett stort lager där objekt lagras.
+///     Till skillnad från stacken, har objekt i heapen ingen specifik ordning.
+///     För att komma åt ett objekt i heapen, används en referens.Minneshantering i heapen är mer komplicerad och hanteras av Garbage Collector (GC).
 
+///  2. Vad är Value Types respektive Reference Types och vad skiljer dem åt? 
+///     - Value Types: Lagrar själva datan direkt i minnet. Exempel inkluderar int, bool, och char. 
+///     När man tilldelar en value type till en annan, kopieras datan.
+///     - Reference Types: Lagrar en referens(en adress) till platsen i minnet där datan finns.
+///     Exempel inkluderar class, string, och List.När man tilldelar en reference type till en annan, kopieras referensen, inte datan. 
+///     Båda variablerna pekar då på samma data i minnet.
+/// 
+///  3. Följande metoder(se bild nedan) genererar olika svar.Den första returnerar 3, den andra returnerar 4, varför?
+///     - I den första metoden (ReturnValue) är x och y av typen int, vilket är en value type. 
+///     När y tilldelas värdet av x, kopieras värdet (3). Ändringen av y påverkar inte x.
+///     - I den andra metoden(ReturnValue2) är x och y av typen MyInt, vilket är en klass(en reference type). 
+///     När y tilldelas x, kopieras referensen. Både x och y pekar nu på samma MyInt-objekt i heapen.
+///     Ändringen av y.MyValue ändrar värdet i detta gemensamma objekt, och därför ser vi ändringen även när vi läser av x.MyValue.
+/// 
+/// Under övning 1:
+///  När ökar listans kapacitet? (Alltså den underliggande arrayens storlek)
+///  - Svar: List<string> ökar sin kapacitet automatiskt när antalet element i listan överskrider den nuvarande kapaciteten.
+/// 
+///  Med hur mycket ökar kapaciteten?
+///  - Svar: Kapaciteten ökar ungefär dubbelt så mycket när den behöver öka.
+///  
+///  Varför ökar inte listans kapacitet i samma takt som element läggs till?
+///  - Svar: Kapaciteten ökar inte i samma takt som element läggs till för att det skulle leda till frekventa och dyra minnesomallokeringar. 
+/// 
+///  Minskar kapaciteten när element tas bort ur listan?
+///  - Svar: Nej, kapaciteten för en List<string> minskar inte när element tas bort. Kapaciteten förblir densamma tills List<string>-objektet ändras explicit.
+///  
+///  När är det då fördelaktigt att använda en egendefinierad array istället för en lista?
+///  - Svar: Det är fördelaktigt att använda en array istället för en lista när:
+///  - Storleken på arrayen är känd och fast.
+///  - Prestanda är kritisk och overhead för dynamisk ändring av storlek är oacceptabel.
+///  - Minnesanvändning behöver strikt kontrolleras.
+///  Answer: It is advantageous to use an array instead of a list when:
+///   - The size of the collection is known and fixed.
+///   - Performance is critical, and the overhead of dynamic resizing is unacceptable.
+///   - Memory usage needs to be strictly controlled.
+///    
+///
+/// Under övning 3:
+/// Simulera ännu en gång ICA-kön på papper.Denna gång med en stack.Varför är det inte så smart att använda en stack i det här fallet?
+/// - Svar: En stack fungerar enligt principen "Först in, sist ut" (FILO). I en ICA-kö vill vi betjäna kunder i den ordning de anländer ("Först in, först ut" - FIFO).
+///   I exemplet ovan skulle Olle bli betjänad före Stina, och Stina före Greta, vilket är fel.  Detta gör en stack olämplig för att simulera en verklig kö.
+/// </summary>
