@@ -11,12 +11,13 @@ class Program
 
         while (true)
         {
-            Console.WriteLine("Please navigate through the menu by inputting the number \n(1, 2, 3 ,4, 5, 0) of your choice"
+            Console.WriteLine("Please navigate through the menu by inputting the number \n(1, 2, 3 ,4, 5, 6, 0) of your choice"
                 + "\n1. Examine a List"
                 + "\n2. Examine a Queue"
                 + "\n3. Examine a Stack"
                 + "\n4. CheckParenthesis"
                 + "\n5. ReverseText"
+                + "\n6. RecursiveEven"
                 + "\n0. Exit the application");
             char input = ' '; //Creates the character input to be used with the switch-case below.
             try
@@ -45,6 +46,9 @@ class Program
                 case '5':
                     ReverseText();
                     break;
+                case '6':
+                    RecursiveEven();
+                    break;
                 /*
                  * Extend the menu to include the recursive 
                  * and iterative exercises.
@@ -53,7 +57,7 @@ class Program
                     Environment.Exit(0);
                     break;
                 default:
-                    Console.WriteLine("Please enter some valid input (0, 1, 2, 3, 4, 5)");
+                    Console.WriteLine("Please enter some valid input (0, 1, 2, 3, 4, 5, 6)");
                     break;
             }
         }
@@ -369,7 +373,37 @@ class Program
         Console.WriteLine($"The reversed string: {reversedString}{Environment.NewLine}");
     }
 
+    static void RecursiveEven()
+    {
+        Console.Write("Enter a number to find the nth even number: ");
+        if (int.TryParse(Console.ReadLine(), out int n) && n > 0)
+        {
+            int result = RecursiveEven(n);
+            Console.WriteLine($"The {n}th even number is: {result}{Environment.NewLine}");
+        }
+        else
+        {
+            Console.WriteLine($"Please enter a valid positive integer.{Environment.NewLine}");
+        }
+    }
 
+    static int RecursiveEven(int n)
+    {
+        if (n == 1)
+        {
+            return 2;
+        }
+        return RecursiveEven(n - 1) + 2;
+    }
+
+    static int RecursiveFibonacci(int n)
+    {
+        if (n <= 1)
+        {
+            return n;
+        }
+        return RecursiveFibonacci(n - 1) + RecursiveFibonacci(n - 2);
+    }
 }
 /// <summary>
 /// Svar på frågorna
