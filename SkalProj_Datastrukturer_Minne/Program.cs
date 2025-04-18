@@ -411,25 +411,25 @@ class Program
 ///     Detta är ett snabbt och effektivt sätt att hantera minne för temporära variabler.
 ///     Heapen: Fungerar mer som ett stort lager där objekt lagras.
 ///     Till skillnad från stacken, har objekt i heapen ingen specifik ordning.
-///     För att komma åt ett objekt i heapen, används en referens.Minneshantering i heapen är mer komplicerad och hanteras av Garbage Collector (GC).
+///     För att komma åt ett objekt i heapen, används en referens.Minneshantering i heapen är mer komplicerad och hanteras av Garbage Collector.
 
 ///  2. Vad är Value Types respektive Reference Types och vad skiljer dem åt? 
 ///     - Value Types: Lagrar själva datan direkt i minnet. Exempel inkluderar int, bool, och char. 
-///     När man tilldelar en value type till en annan, kopieras datan.
+///       När man tilldelar en value type till en annan, kopieras datan.
 ///     - Reference Types: Lagrar en referens(en adress) till platsen i minnet där datan finns.
-///     Exempel inkluderar class, string, och List.När man tilldelar en reference type till en annan, kopieras referensen, inte datan. 
-///     Båda variablerna pekar då på samma data i minnet.
+///       Exempel inkluderar class, string, och List.När man tilldelar en reference type till en annan, kopieras referensen, inte datan. 
+///       Båda variablerna pekar då på samma data i minnet.
 /// 
 ///  3. Följande metoder(se bild nedan) genererar olika svar.Den första returnerar 3, den andra returnerar 4, varför?
 ///     - I den första metoden (ReturnValue) är x och y av typen int, vilket är en value type. 
-///     När y tilldelas värdet av x, kopieras värdet (3). Ändringen av y påverkar inte x.
+///       När y tilldelas värdet av x, kopieras värdet (3). Ändringen av y påverkar inte x.
 ///     - I den andra metoden(ReturnValue2) är x och y av typen MyInt, vilket är en klass(en reference type). 
-///     När y tilldelas x, kopieras referensen. Både x och y pekar nu på samma MyInt-objekt i heapen.
-///     Ändringen av y.MyValue ändrar värdet i detta gemensamma objekt, och därför ser vi ändringen även när vi läser av x.MyValue.
+///       När y tilldelas x, kopieras referensen. Både x och y pekar nu på samma MyInt-objekt i heapen.
+///       Ändringen av y.MyValue ändrar värdet i detta gemensamma objekt, och därför ser vi ändringen även när vi läser av x.MyValue.
 /// 
 /// Under övning 1:
 ///  När ökar listans kapacitet? (Alltså den underliggande arrayens storlek)
-///  - Svar: List<string> ökar sin kapacitet automatiskt när antalet element i listan överskrider den nuvarande kapaciteten.
+///  - Svar: List<t> ökar sin kapacitet automatiskt när antalet element i listan överskrider den nuvarande kapaciteten.
 /// 
 ///  Med hur mycket ökar kapaciteten?
 ///  - Svar: Kapaciteten ökar ungefär dubbelt så mycket när den behöver öka.
@@ -438,17 +438,13 @@ class Program
 ///  - Svar: Kapaciteten ökar inte i samma takt som element läggs till för att det skulle leda till frekventa och dyra minnesomallokeringar. 
 /// 
 ///  Minskar kapaciteten när element tas bort ur listan?
-///  - Svar: Nej, kapaciteten för en List<string> minskar inte när element tas bort. Kapaciteten förblir densamma tills List<string>-objektet ändras explicit.
+///  - Svar: Nej, kapaciteten för en List minskar inte när element tas bort. Kapaciteten förblir densamma tills List<t>-objektet ändras explicit.
 ///  
 ///  När är det då fördelaktigt att använda en egendefinierad array istället för en lista?
 ///  - Svar: Det är fördelaktigt att använda en array istället för en lista när:
-///  - Storleken på arrayen är känd och fast.
-///  - Prestanda är kritisk och overhead för dynamisk ändring av storlek är oacceptabel.
-///  - Minnesanvändning behöver strikt kontrolleras.
-///  Answer: It is advantageous to use an array instead of a list when:
-///   - The size of the collection is known and fixed.
-///   - Performance is critical, and the overhead of dynamic resizing is unacceptable.
-///   - Memory usage needs to be strictly controlled.
+///    Storleken på arrayen är känd och fast.
+///    Prestanda är kritisk och overhead för dynamisk ändring av storlek är oacceptabel.
+///    Minnesanvändning behöver strikt kontrolleras.
 ///    
 ///
 /// Under övning 3:
@@ -464,4 +460,6 @@ class Program
 ///   Iteration använder en fast mängd minne eftersom den inte innebär att nya stackramar skapas för varje repetition.Den uppdaterar värdena på variabler inom samma minnesutrymme.
 ///   Därför föredras iterativa lösningar vanligtvis för prestanda och minneseffektivitet, särskilt för problem som involverar ett stort antal repetitioner.
 ///  
+/// 
+/// Bilder med exempel på stack, queue,  RecursiveOdd() och IterativeOdd() finns i mappen "Images".
 /// </summary>
