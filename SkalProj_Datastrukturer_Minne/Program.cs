@@ -11,13 +11,14 @@ class Program
 
         while (true)
         {
-            Console.WriteLine("Please navigate through the menu by inputting the number \n(1, 2, 3 ,4, 5, 6, 0) of your choice"
+            Console.WriteLine("Please navigate through the menu by inputting the number \n(1, 2, 3 ,4, 5, 6, 7, 0) of your choice"
                 + "\n1. Examine a List"
                 + "\n2. Examine a Queue"
                 + "\n3. Examine a Stack"
                 + "\n4. CheckParenthesis"
                 + "\n5. ReverseText"
                 + "\n6. RecursiveEven"
+                + "\n7. IterativeEven"
                 + "\n0. Exit the application");
             char input = ' '; //Creates the character input to be used with the switch-case below.
             try
@@ -49,6 +50,9 @@ class Program
                 case '6':
                     RecursiveEven();
                     break;
+                case '7':
+                    IterativeEven();
+                    break;
                 /*
                  * Extend the menu to include the recursive 
                  * and iterative exercises.
@@ -57,7 +61,7 @@ class Program
                     Environment.Exit(0);
                     break;
                 default:
-                    Console.WriteLine("Please enter some valid input (0, 1, 2, 3, 4, 5, 6)");
+                    Console.WriteLine("Please enter some valid input (0, 1, 2, 3, 4, 5, 6, 7)");
                     break;
             }
         }
@@ -86,34 +90,25 @@ class Program
         //switch(nav){...}
 
 
-        List<string> theList = new List<string>();
-        string input;
+        List<string> theList = new();
         char nav;
         string value;
 
         while (true)
         {
-            Console.WriteLine($"{Environment.NewLine}Examine List: Enter '+' and 'value' to add the value, '-' and 'value' to remove the value, or 'back' to return to main menu:");
-            input = Console.ReadLine()!;
+            Console.Write($"{Environment.NewLine}Examine List: Enter '+' and 'value' to add the value, '-' and 'value' to remove the value, or 'back' to return to main menu:");
+            string input = Console.ReadLine()?.Trim() ?? string.Empty;
 
-            if (input.Trim().ToLower() == "back")
-            {
+            if (input.Equals("back", StringComparison.OrdinalIgnoreCase))
                 break; // Exit the loop and return to the main menu
-            }
 
-            if (string.IsNullOrEmpty(input))
+            if (string.IsNullOrEmpty(input) || input.Length < 2)
             {
-                Console.WriteLine("Please enter a valid input (+value or -value).");
+                Console.WriteLine("Please enter a valid input ('+value' or '-value').");
                 continue;
             }
             nav = input[0];
-            value = input.Substring(1);
-
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                Console.WriteLine("Please provide a value after the '+' or '-'.");
-                continue;
-            }
+            value = input[1..].Trim();
 
             switch (nav)
             {
@@ -124,13 +119,9 @@ class Program
                     break;
                 case '-':
                     if (theList.Remove(value))
-                    {
                         Console.WriteLine($"Removed '{value}' from the list.");
-                    }
                     else
-                    {
                         Console.WriteLine($"'{value}' not found in the list.");
-                    }
                     Console.WriteLine($"Count: {theList.Count}, Capacity: {theList.Capacity}");
                     break;
                 default:
@@ -174,46 +165,34 @@ class Program
             Console.WriteLine($"{Environment.NewLine}Examine Queue: Enter 'enqueue <name>' to add to queue, 'dequeue' to remove, or 'back' to return to main menu:");
             input = Console.ReadLine()!;
 
-            if (input.Trim().ToLower() == "back")
-            {
+            if (input.Equals("back", StringComparison.OrdinalIgnoreCase))
                 break;
-            }
 
-            if (string.IsNullOrWhiteSpace(input))
+            string[] parts = input.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 0)
             {
-                Console.WriteLine("Please enter a valid input (enqueue <name> or dequeue).");
+                Console.WriteLine("Invalid input. Please use 'enqueue <value>' or 'dequeue'.");
                 continue;
             }
 
-            string[] parts = input.Split(' ');
-            string command = parts[0].Trim().ToLower();
+            string command = parts[0].ToLower();
 
             switch (command)
             {
                 case "enqueue":
                     if (parts.Length > 1)
                     {
-                        string name = string.Join(" ", parts.Skip(1)); //handles names with spaces
-                        theQueue.Enqueue(name);
-                        Console.WriteLine($"'{name}' added to the queue.");
-                        Console.WriteLine($"Current queue: {string.Join(", ", theQueue)}");
+                        theQueue.Enqueue(parts[1]);
+                        Console.WriteLine($"Enqueued '{parts[1]}'. Current queue: {string.Join(", ", theQueue)}");
                     }
                     else
-                    {
                         Console.WriteLine("Please provide a name to enqueue.");
-                    }
                     break;
                 case "dequeue":
-                    if (theQueue.Count > 0)
-                    {
-                        string dequeuedName = theQueue.Dequeue();
-                        Console.WriteLine($"'{dequeuedName}' removed from the queue.");
-                        Console.WriteLine($"Current queue: {string.Join(", ", theQueue)}");
-                    }
+                    if (theQueue.TryDequeue(out string dequeued))
+                        Console.WriteLine($"Dequeued '{dequeued}'. Current queue: {string.Join(", ", theQueue)}");
                     else
-                    {
                         Console.WriteLine("Queue is empty.");
-                    }
                     break;
                 default:
                     Console.WriteLine("Invalid input. Please use 'enqueue <name>' or 'dequeue'.");
@@ -241,12 +220,16 @@ class Program
             Console.WriteLine($"{Environment.NewLine}Examine Stack: Enter 'push <item>' to add to stack, 'pop' to remove, or 'back' to return to main menu:");
             input = Console.ReadLine()!;
 
-            if (input.ToLower() == "back")
-            {
+            if (input.Equals("back", StringComparison.OrdinalIgnoreCase))
                 break;
+
+            string[] parts = input.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 0)
+            {
+                Console.WriteLine("Invalid input. Please use 'push <value>' or 'pop'.");
+                continue;
             }
 
-            string[] parts = input.Split(' ');
             string command = parts[0].ToLower();
 
             switch (command)
@@ -254,27 +237,17 @@ class Program
                 case "push":
                     if (parts.Length > 1)
                     {
-                        string item = string.Join(" ", parts.Skip(1));
-                        theStack.Push(item);
-                        Console.WriteLine($"'{item}' pushed to the stack.");
-                        Console.WriteLine($"Current stack: {string.Join(", ", theStack)}");
+                        theStack.Push(parts[1]);
+                        Console.WriteLine($"'Pushed {parts[1]}'. Current stack: {string.Join(", ", theStack)}.");
                     }
                     else
-                    {
-                        Console.WriteLine("Please provide an item to push.");
-                    }
+                        Console.WriteLine("Please provide a value to push.");
                     break;
                 case "pop":
-                    if (theStack.Count > 0)
-                    {
-                        string poppedItem = theStack.Pop();
-                        Console.WriteLine($"'{poppedItem}' popped from the stack.");
-                        Console.WriteLine($"Current stack: {string.Join(", ", theStack)}");
-                    }
+                    if (theStack.TryPop(out string popped))
+                        Console.WriteLine($"Popped '{popped}'. Current stack: {string.Join(", ", theStack)}.");
                     else
-                    {
                         Console.WriteLine("Stack is empty.");
-                    }
                     break;
                 default:
                     Console.WriteLine("Invalid input. Please use 'push <item>' or 'pop'.");
@@ -283,7 +256,9 @@ class Program
         }
     }
 
-
+    /// <summary>
+    /// Checks if the parentheses in a given string are balanced.
+    /// </summary>
     static void CheckParanthesis()
     {
         /*
@@ -301,18 +276,16 @@ class Program
         }
 
         if (IsBalancedParentheses(input))
-        {
             Console.WriteLine($"The string has balanced parentheses.{Environment.NewLine}");
-        }
         else
-        {
             Console.WriteLine($"The string does not have balanced parentheses.{Environment.NewLine}");
-        }
     }
 
     /// <summary>
-    /// Checks if the parentheses in a string are balanced
+    /// Determines if a string has balanced parentheses.
     /// </summary>
+    /// <param name="input">The input string to check.</param>
+    /// <returns>True if the parentheses are balanced; otherwise, false.</returns>
     static bool IsBalancedParentheses(string input)
     {
         Stack<char> stack = new();
@@ -326,83 +299,106 @@ class Program
         foreach (char c in input)
         {
             if (matchingPairs.ContainsValue(c)) // Opening brackets
-            {
                 stack.Push(c);
-            }
             else if (matchingPairs.ContainsKey(c)) // Closing brackets
             {
                 if (stack.Count == 0 || stack.Pop() != matchingPairs[c])
-                {
                     return false;
-                }
             }
         }
         return stack.Count == 0;// Ensure no unmatched opening brackets remain
     }
 
     /// <summary>
-    /// Reverses the text using a stack
-    /// 
+    /// Reverses a given string using a stack. 
     /// this method is a part of exercise 3: ExamineStack().
     /// </summary>
     private static void ReverseText()
     {
-        Stack<char> charStack = new();
-        string inputString;
-
-        Console.Write("Reverse Text: Enter a text to reverse: ");
-        inputString = Console.ReadLine()!;
+        Console.Write("Enter a text to reverse: ");
+        string inputString = Console.ReadLine()?.Trim() ?? string.Empty;
 
         if (string.IsNullOrWhiteSpace(inputString))
         {
-            Console.WriteLine($"The string should not be empty.{Environment.NewLine}");
+            Console.WriteLine($"Input cannot be empty.{Environment.NewLine}");
             return;
         }
 
-        foreach (char c in inputString)
-        {
-            charStack.Push(c);
-        }
-
-        string reversedString = "";
-        while (charStack.Count > 0)
-        {
-            reversedString += charStack.Pop();
-        }
-
-        Console.WriteLine($"The reversed string: {reversedString}{Environment.NewLine}");
+        Stack<char> charStack = new(inputString);
+        Console.WriteLine($"Reversed text: {new string([.. charStack])}{Environment.NewLine}");
     }
 
+    /// <summary>
+    /// Finds the nth even number using recursion.
+    /// This method is a part of exercise 5: RecursiveEven()
+    /// Checks input from the user and calls the RecursiveEven(int n) method
+    /// </summary>
     static void RecursiveEven()
     {
         Console.Write("Enter a number to find the nth even number: ");
         if (int.TryParse(Console.ReadLine(), out int n) && n > 0)
-        {
-            int result = RecursiveEven(n);
-            Console.WriteLine($"The {n}th even number is: {result}{Environment.NewLine}");
-        }
+            Console.WriteLine($"The {n}th even number is: {RecursiveEven(n)}{Environment.NewLine}");
         else
-        {
             Console.WriteLine($"Please enter a valid positive integer.{Environment.NewLine}");
-        }
     }
 
-    static int RecursiveEven(int n)
+    /// <summary>
+    /// Recursively calculates the nth even number.
+    /// </summary>
+    /// <param name="n">The position of the even number to find.</param>
+    /// <returns>The nth even number.</returns>
+    static int RecursiveEven(int n) => n == 1 ? 2 : RecursiveEven(n - 1) + 2;
+
+    /// <summary>
+    /// This method is a part of exercise 5: RecursiveFibonacci()
+    /// Returns the nth Fibonacci number using recursion
+    /// </summary>
+    /// <param name="n"></param>
+    static int RecursiveFibonacci(int n) => n <= 1 ? n : RecursiveFibonacci(n - 1) + RecursiveFibonacci(n - 2);
+
+    /// <summary>
+    /// Finds the nth even number using iteration.
+    /// This method is a part of exercise 6: IterativeEven()
+    /// Checks input from the user and calls the IterativeEven(int n) method
+    /// </summary>
+    private static void IterativeEven()
     {
-        if (n == 1)
-        {
-            return 2;
-        }
-        return RecursiveEven(n - 1) + 2;
+        Console.Write("Enter a number to find the nth even number: ");
+        if (int.TryParse(Console.ReadLine(), out int n) && n > 0)
+            Console.WriteLine($"The {n}th even number is: {IterativeEven(n)}{Environment.NewLine}");
+        else
+            Console.WriteLine($"Please enter a valid positive integer.{Environment.NewLine}");
     }
 
-    static int RecursiveFibonacci(int n)
+    /// <summary>
+    /// Iteratively calculates the nth even number using for loop.
+    /// </summary>
+    /// <param name="n">The position of the even number to find.</param>
+    /// <returns>The nth even number.</returns>
+    private static int IterativeEven(int n)
     {
-        if (n <= 1)
+        int evenNumber = 2;
+        for (int i = 1; i < n; i++)
+            evenNumber += 2;
+        return evenNumber;
+    }
+
+
+    /// <summary>
+    /// This method is a part of exercise 6: IterativeFibonacci()
+    /// returns the nth Fibonacci number using iteration
+    /// </summary>
+    static int IterativeFibonacci(int n)
+    {
+        if (n <= 1) return n;
+        int a = 0, b = 1, result = 0;
+        for (int i = 2; i <= n; i++)
         {
-            return n;
+            result = a + b;
+            a = b;
+            b = result;
         }
-        return RecursiveFibonacci(n - 1) + RecursiveFibonacci(n - 2);
+        return result;
     }
 }
 /// <summary>
@@ -459,4 +455,13 @@ class Program
 /// Simulera ännu en gång ICA-kön på papper.Denna gång med en stack.Varför är det inte så smart att använda en stack i det här fallet?
 /// - Svar: En stack fungerar enligt principen "Först in, sist ut" (FILO). I en ICA-kö vill vi betjäna kunder i den ordning de anländer ("Först in, först ut" - FIFO).
 ///   I exemplet ovan skulle Olle bli betjänad före Stina, och Stina före Greta, vilket är fel.  Detta gör en stack olämplig för att simulera en verklig kö.
+///   
+/// 
+/// Under övning 6:
+/// Utgå ifrån era nyvunna kunskaper om iteration, rekursion och minneshantering.Vilken av ovanstående funktioner är mest minnesvänlig och varför?
+/// - Svar: Iteration är generellt mer minnesvänlig än rekursion.
+///   Rekursion innebär att man skickar en ny stackram för varje funktionsanrop, vilket förbrukar minne.Djup rekursion kan leda till ett stackoverflow-fel.
+///   Iteration använder en fast mängd minne eftersom den inte innebär att nya stackramar skapas för varje repetition.Den uppdaterar värdena på variabler inom samma minnesutrymme.
+///   Därför föredras iterativa lösningar vanligtvis för prestanda och minneseffektivitet, särskilt för problem som involverar ett stort antal repetitioner.
+///  
 /// </summary>
